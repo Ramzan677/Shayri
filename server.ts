@@ -1,6 +1,6 @@
 /**
  * PUBLIC SHAYARI API BRIDGE (Deno)
- * Focus: Roman English + Emoji Support + Zero Failure Logic
+ * Pure Bridge Mode: Fetches ONLY from external API
  * Developed by Ramzan Ahsan
  */
 
@@ -9,31 +9,10 @@ import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 const EXTERNAL_API_BASE = "https://fast-dev-apis.vercel.app";
 const ALLOWED_ORIGIN = "*"; 
 
-// A collection of emojis to make the shayari look professional and beautiful
-const EMOJI_SET = ["❤️", "✨", "🥀", "🌙", "🩹", "💭", "🕊️", "💎", "⏳", "🔥", "🌸", "🦋", "🦁", "👑", "🍃"];
+// Emojis are still added to the API result to make it look professional
+const EMOJI_SET = ["❤️", "✨", "🥀", "🌙", "🩹", "💭", "🕊️", "💎", "⏳", "🔥", "🌸", "🦋", "🍃"];
 
-// High-quality Roman English Fallbacks (Used if the external API is unreachable)
-const BACKUP_DB: Record<string, string[]> = {
-  romantic: [
-    "Aap se door ho kar hum jayenge kaha,\nAap jaisa dost hum payenge kaha.",
-    "Tujhe dekha toh yeh jaana sanam,\nPyaar hota hai deewana sanam.",
-    "Dil ki dhadkan aur meri sadaa ho tum,\nmeri pehli aur aakhri wafa ho tum."
-  ],
-  sad: [
-    "Dil todna toh sabki aadat ban gayi hai,\nAb toh tanhayi hi apni ibaadat ban gayi hai.",
-    "Mohabbat mein rona toh naseeb ki baat hai,\nPar kisi ke liye rona dil ki gehraayi hai."
-  ],
-  funny: [
-    "Macchar ne jo kata, dil mein mere junoon tha,\nKhujli itni hui, ki dil ka sukoon tha.",
-    "Ishq mein hum tumhe kya batayein,\nkhud ko bhool gaye tumhe yaad karte karte."
-  ],
-  friend: [
-    "Dosti woh nahi jo jaan deti hai,\nDosti woh hai jo muskaan deti hai.",
-    "Dost vahi jo bheed mein bhi,\naapka haath thame rakhe."
-  ]
-};
-
-console.log("Ramzan Ahsan's Secure Public API is Live! (Roman + Emoji)");
+console.log("Ramzan Ahsan's Pure API Bridge is Live!");
 
 serve(async (req: Request) => {
   const headers = new Headers({
@@ -51,7 +30,7 @@ serve(async (req: Request) => {
   const target = validCategories.includes(category) ? category : "romantic";
 
   try {
-    // Fetch with a real browser User-Agent to prevent blocks
+    // 1. FETCH ONLY FROM EXTERNAL API
     const response = await fetch(`${EXTERNAL_API_BASE}/${target}`, {
       method: "GET",
       headers: { 
@@ -59,51 +38,44 @@ serve(async (req: Request) => {
       }
     });
 
-    if (!response.ok) throw new Error("Upstream Timeout");
+    if (!response.ok) throw new Error("Upstream API is unreachable");
 
     const data = await response.json();
     let text = data.shayari;
 
-    // Check if the text is Roman (contains English letters)
+    // 2. ROMAN ENGLISH VALIDATION
+    // If the selected category gives non-Roman text, we force a fetch from 'romantic'
     const isRoman = /[a-zA-Z]/.test(text);
-    
-    // If not Roman, try to get a Romantic one which is usually Roman
     if (!isRoman) {
        const retry = await fetch(`${EXTERNAL_API_BASE}/romantic`);
        const retryData = await retry.json();
        text = retryData.shayari;
     }
 
-    return sendResponse(text, target, headers);
+    // 3. ADD EMOJIS & SEND
+    const e1 = EMOJI_SET[Math.floor(Math.random() * EMOJI_SET.length)];
+    const e2 = EMOJI_SET[Math.floor(Math.random() * EMOJI_SET.length)];
+    const finalShayari = `${text.trim()} ${e1}${e2}`;
+
+    return new Response(
+      JSON.stringify({
+        status: true,
+        shayari: finalShayari,
+        category: target,
+        developer: "Ramzan Ahsan"
+      }),
+      { status: 200, headers }
+    );
 
   } catch (error) {
-    // If anything fails, send a beautiful high-quality fallback
-    const list = BACKUP_DB[target === "shayari" ? "romantic" : target] || BACKUP_DB.romantic;
-    const fallbackText = list[Math.floor(Math.random() * list.length)];
-    
-    return sendResponse(fallbackText, target, headers, true);
+    // No internal poetry used here anymore
+    return new Response(
+      JSON.stringify({ 
+        status: false, 
+        message: "External API Error. No data received from source.",
+        developer: "Ramzan Ahsan"
+      }),
+      { status: 502, headers }
+    );
   }
 });
-
-/**
- * Helper to format and send the JSON response
- */
-function sendResponse(text: string, category: string, headers: Headers, isFallback = false) {
-  // Add 2 random emojis
-  const e1 = EMOJI_SET[Math.floor(Math.random() * EMOJI_SET.length)];
-  const e2 = EMOJI_SET[Math.floor(Math.random() * EMOJI_SET.length)];
-  
-  const finalShayari = `${text.trim()} ${e1}${e2}`;
-
-  return new Response(
-    JSON.stringify({
-      status: true,
-      shayari: finalShayari,
-      category: category,
-      language: "Roman English",
-      developer: "Ramzan Ahsan",
-      mode: isFallback ? "Secure Mode" : "Live API"
-    }),
-    { status: 200, headers }
-  );
-}
