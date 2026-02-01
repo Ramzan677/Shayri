@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 
 // --- CONFIGURATION ---
-const ALLOWED_ORIGIN = "https://ramzan-shayri.deno.dev/";
+const ALLOWED_ORIGIN = "https://shayr.netlify.app/";
 const EXTERNAL_API_BASE = "https://fast-dev-apis.vercel.app";
 
 console.log(`Secure Shayari API running. Allowed Origin: ${ALLOWED_ORIGIN}`);
