@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shayari - Ramzan Ahsan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&family=Outfit:wght@300;400;600&family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #818cf8;
+            --secondary: #c084fc;
+            --text-glow: rgba(165, 180, 252, 0.4);
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #020617;
+            color: #f8fafc;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .aura {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.15;
+            animation: move 15s infinite alternate;
+        }
+        .aura-1 { width: 450px; height: 450px; background: var(--primary); top: -15%; left: -10%; }
+        .aura-2 { width: 400px; height: 400px; background: var(--secondary); bottom: -15%; right: -10%; animation-delay: -5s; }
+        
+        @keyframes move {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(60px, 40px) scale(1.15); }
+        }
+
+        .main-container {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 3rem;
+            width: 92%;
+            max-width: 420px;
+            padding: 3.5rem 2.5rem;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.9);
+            position: relative;
+        }
+
+        .poetry-box {
+            position: relative;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .poetry-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.85rem;
+            line-height: 1.6;
+            color: #ffffff;
+            font-style: italic;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: -0.01em;
+            text-shadow: 0 0 25px var(--text-glow), 0 2px 10px rgba(0,0,0,0.6);
+            padding: 0 5px;
+        }
+
+        .ornament {
+            width: 100px;
+            height: 24px;
+            margin-top: 25px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpath d='M0 10 Q 25 0, 50 10 T 100 10' stroke='rgba(129, 140, 248, 0.6)' fill='none' stroke-width='2'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .quote-icon {
+            font-family: 'Dancing Script', cursive;
+            font-size: 5rem;
+            position: absolute;
+            opacity: 0.08;
+            color: var(--primary);
+            line-height: 1;
+        }
+        .quote-left { top: -30px; left: -20px; }
+        .quote-right { bottom: -30px; right: -20px; }
+
+        .btn-refresh {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 1.5rem;
+            padding: 1.25rem;
+            width: 100%;
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 12px 24px -6px rgba(79, 70, 229, 0.5);
+        }
+        .btn-refresh:hover:not(:disabled) {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+        .btn-refresh:active { transform: scale(0.96); }
+        .btn-refresh:disabled { opacity: 0.8; cursor: wait; }
+
+        .btn-copy {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1rem;
+            padding: 0.8rem 1.6rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #c7d2fe;
+            transition: all 0.3s ease;
+            margin: 0 auto 1.5rem auto;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .loader-dots {
+            display: flex;
+            gap: 8px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: #a855f7;
+            border-radius: 50%;
+            animation: bounce 0.6s infinite alternate;
+        }
+        .dot:nth-child(2) { animation-delay: 0.15s; }
+        .dot:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes bounce { to { transform: translateY(-15px); opacity: 0.2; } }
+
+        .fade-out { opacity: 0; transform: translateY(10px); }
+        .fade-in { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="aura aura-1"></div>
+    <div class="aura aura-2"></div>
+
+    <div class="main-container">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-black tracking-tighter text-white mb-1 italic">
+                Shayari<span class="text-indigo-400">.</span>
+            </h1>
+            <div class="flex items-center justify-center gap-3 opacity-30">
+                <div class="h-[1px] w-12 bg-gradient-to-r from-transparent to-white"></div>
+                <p class="text-[10px] uppercase tracking-[0.5em] font-bold text-white">Ramzan Ahsan</p>
+                <div class="h-[1px] w-12 bg-gradient-to-l from-transparent to-white"></div>
+            </div>
+        </header>
+
+        <div class="poetry-box">
+            <span class="quote-icon quote-left">“</span>
+            <div id="text-container" class="poetry-text fade-in">Fetching Poetry...</div>
+            <div id="ornament" class="ornament"></div>
+            <span class="quote-icon quote-right">”</span>
+
+            <div id="loader" class="absolute inset-0 flex items-center justify-center hidden">
+                <div class="loader-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <button onclick="copyToClipboard()" id="copy-btn" class="btn-copy">
+                <i id="copy-icon" data-lucide="copy" class="w-4 h-4"></i>
+                <span id="copy-text">Copy Poetry</span>
+            </button>
+
+            <button onclick="fetchNextPoetry()" id="refresh-btn" class="btn-refresh">
+                <i data-lucide="sparkles" class="w-4 h-4 fill-current"></i>
+                Generate New
+            </button>
+            <p class="text-center text-[8px] text-gray-700 mt-6 uppercase tracking-[0.4em] font-bold">Live API Access</p>
+        </div>
+    </div>
+
+    <textarea id="hidden-copy-area" style="position: absolute; left: -9999px;"></textarea>
+
+    <script>
+        const API_URL = "https://fast-dev-apis.vercel.app/shayari";
+        const EMOJIS = ["🥀", "✨", "🌙", "🖤", "🕊️", "🍂", "🧿", "🩹", "💎", "🔥", "🌸", "🦋"];
+        
+        let lastShayari = "";
+        lucide.createIcons();
+
+        /**
+         * Robust Multi-Proxy Racing Fetch
+         */
+        async function getApiData() {
+            const controller = new AbortController();
+            const signal = controller.signal;
+            const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+            // Channel 1: Direct with aggressive cache busting and randomness
+            const fetchDirect = async () => {
+                const res = await fetch(`${API_URL}?cb=${Date.now()}_${Math.random()}`, { 
+                    signal, 
+                    cache: 'no-cache',
+                    mode: 'cors'
+                });
+                return await res.json();
+            };
+
+            // Channel 2: AllOrigins
+            const fetchAllOrigins = async () => {
+                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(API_URL)}&t=${Date.now()}`, { signal });
+                const json = await res.json();
+                return JSON.parse(json.contents);
+            };
+
+            // Channel 3: CorsProxy.io
+            const fetchCorsProxy = async () => {
+                const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(API_URL)}&t=${Date.now()}`, { signal });
+                return await res.json();
+            };
+
+            // Channel 4: CodeTabs (Alternate Proxy)
+            const fetchCodeTabs = async () => {
+                const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(API_URL)}`, { signal });
+                return await res.json();
+            };
+
+            try {
+                // Race multiple paths for stability
+                const data = await Promise.any([fetchDirect(), fetchAllOrigins(), fetchCorsProxy(), fetchCodeTabs()]);
+                clearTimeout(timeoutId);
+                
+                if (data && data.status && data.shayari && data.shayari !== lastShayari) {
+                    return data;
+                }
+                return null;
+            } catch (err) {
+                console.error("Fetch attempt failed.");
+                return null;
+            }
+        }
+
+        async function fetchNextPoetry(isRetry = false) {
+            const textContainer = document.getElementById('text-container');
+            const ornament = document.getElementById('ornament');
+            const loader = document.getElementById('loader');
+            const btn = document.getElementById('refresh-btn');
+            
+            resetCopyUI();
+            textContainer.classList.add('fade-out');
+            ornament.style.opacity = '0';
+            
+            btn.disabled = true;
+            loader.classList.remove('hidden');
+
+            // Force wait for 400ms to avoid spamming the Vercel server
+            await new Promise(r => setTimeout(r, 400));
+
+            const data = await getApiData();
+            
+            if (!data && !isRetry) {
+                // Exponential Jitter: wait 1.5 seconds and retry once automatically
+                setTimeout(() => fetchNextPoetry(true), 1500);
+                return;
+            }
+
+            loader.classList.add('hidden');
+            btn.disabled = false;
+            textContainer.classList.remove('fade-out');
+            ornament.style.opacity = '1';
+
+            if (data && data.status) {
+                const e = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+                textContainer.innerText = `${data.shayari} ${e}`;
+                lastShayari = data.shayari;
+            } else {
+                textContainer.innerHTML = `
+                    <span class="text-indigo-400 font-bold uppercase tracking-widest text-sm italic">Connection Busy</span><br>
+                    <span class="text-[10px] opacity-40 font-sans italic block mt-1">Server is cooling down. Tap again.</span>
+                `;
+            }
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('text-container').innerText;
+            if (text.includes("Fetching") || text.includes("Busy")) return;
+
+            const copyArea = document.getElementById('hidden-copy-area');
+            const copyBtn = document.getElementById('copy-btn');
+            const copyText = document.getElementById('copy-text');
+            const copyIcon = document.getElementById('copy-icon');
+
+            copyArea.value = text;
+            copyArea.select();
+            document.execCommand('copy');
+
+            copyText.innerText = "Text Copied!";
+            copyBtn.style.color = "#ffffff";
+            copyIcon.setAttribute('data-lucide', 'check-circle');
+            lucide.createIcons();
+
+            setTimeout(resetCopyUI, 2000);
+        }
+
+        function resetCopyUI() {
+            const copyText = document.getElementById('copy-text');
+            const copyBtn = document.getElementById('copy-btn');
+            const copyIcon = document.getElementById('copy-icon');
+            if(!copyText) return;
+            copyText.innerText = "Copy Poetry";
+            copyBtn.style.color = "#c7d2fe";
+            copyIcon.setAttribute('data-lucide', 'copy');
+            lucide.createIcons();
+        }
+
+        window.onload = () => fetchNextPoetry();
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>
